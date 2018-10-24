@@ -41,16 +41,11 @@ def load_image(path):
 
 
 def load_mask(path, problem_type):
-    if problem_type == 'binary':
-        mask_folder = 'binary_masks'
-        factor = prepare_data.binary_factor
-    elif problem_type == 'parts':
-        mask_folder = 'parts_masks'
-        factor = prepare_data.parts_factor
-    elif problem_type == 'instruments':
-        factor = prepare_data.instrument_factor
-        mask_folder = 'instruments_masks'
+    mask_folder = 'binary_masks'
+    factor = prepare_data.binary_factor
 
-    mask = cv2.imread(str(path).replace('images', mask_folder).replace('jpg', 'png'), 0)
+    file_name = str(path)[-13:]
+
+    mask = cv2.imread((str(path)[:-13] + '/' + mask_folder + '/' + file_name), 0)
 
     return (mask / factor).astype(np.uint8)

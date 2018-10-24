@@ -45,10 +45,10 @@ def main():
     arg('--n-epochs', type=int, default=100)
     arg('--lr', type=float, default=0.0001)
     arg('--workers', type=int, default=12)
-    arg('--train_crop_height', type=int, default=1024)
-    arg('--train_crop_width', type=int, default=1280)
-    arg('--val_crop_height', type=int, default=1024)
-    arg('--val_crop_width', type=int, default=1280)
+    arg('--train_crop_height', type=int, default=768)
+    arg('--train_crop_width', type=int, default=768)
+    arg('--val_crop_height', type=int, default=768)
+    arg('--val_crop_width', type=int, default=768)
     arg('--type', type=str, default='binary', choices=['binary', 'parts', 'instruments'])
     arg('--model', type=str, default='UNet', choices=moddel_list.keys())
 
@@ -107,7 +107,7 @@ def main():
             pin_memory=torch.cuda.is_available()
         )
 
-    train_file_names, val_file_names = get_split(args.fold)
+    train_file_names, val_file_names = get_split()
 
     print('num train = {}, num_val = {}'.format(len(train_file_names), len(val_file_names)))
 

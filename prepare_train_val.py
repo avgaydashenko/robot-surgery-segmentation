@@ -1,21 +1,16 @@
-from prepare_data import data_path
+from random import shuffle
+
+from prepare_data import train_path
 
 
-def get_split(fold):
-    folds = {0: [1, 3],
-             1: [2, 5],
-             2: [4, 8],
-             3: [6, 7]}
+def get_split():
 
-    train_path = data_path / 'cropped_train'
+    all_files = list(train_path.glob('*'))
+    shuffle(all_files)
 
-    train_file_names = []
-    val_file_names = []
+    num = int(len(all_files) / 4)
 
-    for instrument_id in range(1, 9):
-        if instrument_id in folds[fold]:
-            val_file_names += list((train_path / ('instrument_dataset_' + str(instrument_id)) / 'images').glob('*'))
-        else:
-            train_file_names += list((train_path / ('instrument_dataset_' + str(instrument_id)) / 'images').glob('*'))
+    val_file_names = all_files[:num]
+    train_file_names = all_files[num:]
 
     return train_file_names, val_file_names
