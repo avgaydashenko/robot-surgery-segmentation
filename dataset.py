@@ -36,8 +36,9 @@ def load_image(path):
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
-def load_mask(path: str):
+def load_mask(path):
     factor = prepare_data.binary_factor
-    mask = cv2.imread(path.replace('train_v2', 'binary_masks'), 0)
+
+    mask = cv2.imread(str(path).replace('train_v2', 'binary_masks'), 0)
 
     return (mask / factor).astype(np.uint8)

@@ -36,7 +36,7 @@ def main():
     arg('--jaccard-weight', default=0.5, type=float)
     arg('--device-ids', type=str, default='0', help='For example 0,1 to run on two GPUs')
     arg('--root', default='runs/debug', help='checkpoint root')
-    arg('--batch-size', type=int, default=4)
+    arg('--batch-size', type=int, default=2)
     arg('--n-epochs', type=int, default=10)
     arg('--lr', type=float, default=0.001)
     arg('--workers', type=int, default=12)
