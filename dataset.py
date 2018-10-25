@@ -7,12 +7,11 @@ from albumentations.torch.functional import img_to_tensor
 
 
 class RoboticsDataset(Dataset):
-    def __init__(self, file_names, to_augment=False, transform=None, mode='train', problem_type=None):
+    def __init__(self, file_names, to_augment=False, transform=None, mode='train'):
         self.file_names = file_names
         self.to_augment = to_augment
         self.transform = transform
         self.mode = mode
-        self.problem_type = problem_type
 
     def __len__(self):
         return len(self.file_names)
@@ -20,17 +19,14 @@ class RoboticsDataset(Dataset):
     def __getitem__(self, idx):
         img_file_name = self.file_names[idx]
         image = load_image(img_file_name)
-        mask = load_mask(img_file_name, self.problem_type)
+        mask = load_mask(img_file_name)
 
         data = {"image": image, "mask": mask}
         augmented = self.transform(**data)
         image, mask = augmented["image"], augmented["mask"]
 
         if self.mode == 'train':
-            if self.problem_type == 'binary':
-                return img_to_tensor(image), torch.from_numpy(np.expand_dims(mask, 0)).float()
-            else:
-                return img_to_tensor(image), torch.from_numpy(mask).long()
+            return img_to_tensor(image), torch.from_numpy(np.expand_dims(mask, 0)).float()
         else:
             return img_to_tensor(image), str(img_file_name)
 
@@ -40,12 +36,8 @@ def load_image(path):
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
-def load_mask(path, problem_type):
-    mask_folder = 'binary_masks'
+def load_mask(path: str):
     factor = prepare_data.binary_factor
-
-    file_name = str(path)[-13:]
-
-    mask = cv2.imread((str(path)[:-13] + '/' + mask_folder + '/' + file_name), 0)
+    mask = cv2.imread(path.replace('train_v2', 'binary_masks'), 0)
 
     return (mask / factor).astype(np.uint8)

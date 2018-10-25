@@ -21,28 +21,14 @@ def write_event(log, step, **data):
     log.flush()
 
 
-def check_crop_size(image_height, image_width):
-    """Checks if image size divisible by 32.
-
-    Args:
-        image_height:
-        image_width:
-
-    Returns:
-        True if both height and width divisible by 32 and False otherwise.
-
-    """
-    return image_height % 32 == 0 and image_width % 32 == 0
-
-
-def train(args, model, criterion, train_loader, valid_loader, validation, init_optimizer, n_epochs=None, fold=None,
+def train(args, model, criterion, train_loader, valid_loader, validation, init_optimizer, n_epochs=None,
           num_classes=None):
     lr = args.lr
     n_epochs = n_epochs or args.n_epochs
     optimizer = init_optimizer(lr)
 
     root = Path(args.root)
-    model_path = root / 'model_{fold}.pt'.format(fold=fold)
+    model_path = root / 'model.pt'
     if model_path.exists():
         state = torch.load(str(model_path))
         epoch = state['epoch']
@@ -60,7 +46,7 @@ def train(args, model, criterion, train_loader, valid_loader, validation, init_o
     }, str(model_path))
 
     report_each = 10
-    log = root.joinpath('train_{fold}.log'.format(fold=fold)).open('at', encoding='utf8')
+    log = root.joinpath('train.log').open('at', encoding='utf8')
     valid_losses = []
     for epoch in range(epoch, n_epochs + 1):
         model.train()

@@ -1,5 +1,4 @@
 from random import shuffle
-
 from prepare_data import train_path
 
 
