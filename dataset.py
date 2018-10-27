@@ -37,8 +37,5 @@ def load_image(path):
 
 
 def load_mask(path):
-    factor = prepare_data.binary_factor
-
-    mask = cv2.imread(str(path).replace('train_v2', 'binary_masks'), 0)
-
-    return (mask / factor).astype(np.uint8)
+    mask = cv2.imread((str(path).replace('train_v2', 'binary_masks')), 0)
+    return (mask / prepare_data.binary_factor).astype(np.uint8)

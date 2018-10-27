@@ -21,23 +21,22 @@ def write_event(log, step, **data):
     log.flush()
 
 
-def train(args, model, criterion, train_loader, valid_loader, validation, init_optimizer, n_epochs=None,
-          num_classes=None):
+def train(args, model, criterion, train_loader, valid_loader, validation, init_optimizer, n_epochs=None):
     lr = args.lr
     n_epochs = n_epochs or args.n_epochs
     optimizer = init_optimizer(lr)
 
     root = Path(args.root)
     model_path = root / 'model.pt'
-    if model_path.exists():
-        state = torch.load(str(model_path))
-        epoch = state['epoch']
-        step = state['step']
-        model.load_state_dict(state['model'])
-        print('Restored model, epoch {}, step {:,}'.format(epoch, step))
-    else:
-        epoch = 1
-        step = 0
+    # if model_path.exists():
+    #     state = torch.load(str(model_path))
+    #     epoch = state['epoch']
+    #     step = state['step']
+    #     model.load_state_dict(state['model'])
+    #     print('Restored model, epoch {}, step {:,}'.format(epoch, step))
+    # else:
+    epoch = 1
+    step = 0
 
     save = lambda ep: torch.save({
         'model': model.state_dict(),
@@ -79,7 +78,7 @@ def train(args, model, criterion, train_loader, valid_loader, validation, init_o
             write_event(log, step, loss=mean_loss)
             tq.close()
             save(epoch + 1)
-            valid_metrics = validation(model, criterion, valid_loader, num_classes)
+            valid_metrics = validation(model, criterion, valid_loader)
             write_event(log, step, **valid_metrics)
             valid_loss = valid_metrics['valid_loss']
             valid_losses.append(valid_loss)

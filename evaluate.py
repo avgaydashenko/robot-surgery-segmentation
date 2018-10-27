@@ -21,12 +21,14 @@ if __name__ == '__main__':
     arg('--train_path', type=str, default='/home/raznem/proj_kaggle_airbus/data',
         help='path where train images with ground truth are located')
     arg('--target_path', type=str, default='predictions/unet11', help='path with predictions')
+    arg('--problem_type', type=str, default='parts', choices=['binary', 'parts', 'instruments'])
     args = parser.parse_args()
 
     result_dice = []
     result_jaccard = []
 
-    for file_name in (Path(args.train_path) / 'binary_masks').glob('*'):
+    for file_name in (
+            Path(args.train_path) / 'binary_masks').glob('*'):
         y_true = (cv2.imread(str(file_name), 0) > 0).astype(np.uint8)
 
         pred_file_name = (Path(args.target_path) / 'binary' / file_name.name)

@@ -25,7 +25,6 @@ def img_transform(p=1):
 
 def get_model(model_path, model_type='UNet11'):
     """
-
     :param model_path:
     :param model_type: 'UNet', 'UNet16', 'UNet11', 'LinkNet34', 'AlbuNet'
     :return:
@@ -72,11 +71,11 @@ def predict(model, from_file_names, batch_size, to_path, img_transform):
 
             for i, image_name in enumerate(paths):
                 factor = prepare_data.binary_factor
-                full_mask = (F.sigmoid(outputs[i, 0]).data.cpu().numpy() * factor).astype(np.uint8)
+                t_mask = (F.sigmoid(outputs[i, 0]).data.cpu().numpy() * factor).astype(np.uint8)
 
                 to_path.mkdir(exist_ok=True, parents=True)
 
-                cv2.imwrite(str(to_path / (Path(paths[i]).stem + '.jpg')), full_mask)
+                cv2.imwrite(str(to_path / (Path(paths[i]).stem + '.jpg')), t_mask)
 
 
 if __name__ == '__main__':
