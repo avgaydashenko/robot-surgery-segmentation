@@ -110,7 +110,7 @@ def main():
     train_loader = make_loader(train_file_names, shuffle=True, transform=train_transform(p=1),
                                batch_size=args.batch_size)
     valid_loader = make_loader(val_file_names, transform=val_transform(p=1), batch_size=len(device_ids))
-tr
+
     root.joinpath('params.json').write_text(
         json.dumps(vars(args), indent=True, sort_keys=True))
 
