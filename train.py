@@ -20,7 +20,12 @@ from albumentations import (
     HorizontalFlip,
     VerticalFlip,
     Normalize,
-    Compose
+    Compose,
+    RandomCrop,
+    CenterCrop,
+    Transpose,
+    RandomRotate90,
+    RandomSizedCrop
 )
 
 moddel_list = {'UNet11': UNet11,
@@ -36,10 +41,14 @@ def main():
     arg('--jaccard-weight', default=0.5, type=float)
     arg('--device-ids', type=str, default='0', help='For example 0,1 to run on two GPUs')
     arg('--root', default='runs/debug', help='checkpoint root')
-    arg('--batch-size', type=int, default=2)
+    arg('--batch-size', type=int, default=16)
     arg('--n-epochs', type=int, default=10)
     arg('--lr', type=float, default=0.001)
     arg('--workers', type=int, default=12)
+    arg('--train_crop_height', type=int, default=256)
+    arg('--train_crop_width', type=int, default=256)
+    arg('--val_crop_height', type=int, default=768)
+    arg('--val_crop_width', type=int, default=768)
     arg('--model', type=str, default='AlbuNet', choices=moddel_list.keys())
 
     args = parser.parse_args()
@@ -83,6 +92,10 @@ def main():
 
     def train_transform(p=1):
         return Compose([
+            RandomCrop(height=args.train_crop_height, width=args.train_crop_width, p=1),
+            Transpose(p=0.5),
+            RandomRotate90(p=0.5),
+            RandomSizedCrop(min_max_height=(100,256), height=args.train_crop_height, width=args.train_crop_width),
             VerticalFlip(p=0.5),
             HorizontalFlip(p=0.5),
             Normalize(p=1)
@@ -90,17 +103,16 @@ def main():
 
     def val_transform(p=1):
         return Compose([
+            CenterCrop(height=args.val_crop_height, width=args.val_crop_width, p=1),
             Normalize(p=1)
         ], p=p)
 
     train_loader = make_loader(train_file_names, shuffle=True, transform=train_transform(p=1),
                                batch_size=args.batch_size)
     valid_loader = make_loader(val_file_names, transform=val_transform(p=1), batch_size=len(device_ids))
-
+tr
     root.joinpath('params.json').write_text(
         json.dumps(vars(args), indent=True, sort_keys=True))
-
-    valid = validation_binary
 
     utils.train(
         init_optimizer=lambda lr: Adam(model.parameters(), lr=lr),
@@ -109,8 +121,7 @@ def main():
         criterion=loss,
         train_loader=train_loader,
         valid_loader=valid_loader,
-        validation=valid,
-        num_classes=num_classes
+        validation=validation_binary
     )
 
 
