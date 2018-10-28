@@ -28,15 +28,15 @@ def train(args, model, criterion, train_loader, valid_loader, validation, init_o
 
     root = Path(args.root)
     model_path = root / 'model.pt'
-    # if model_path.exists():
-    #     state = torch.load(str(model_path))
-    #     epoch = state['epoch']
-    #     step = state['step']
-    #     model.load_state_dict(state['model'])
-    #     print('Restored model, epoch {}, step {:,}'.format(epoch, step))
-    # else:
-    epoch = 1
-    step = 0
+    if model_path.exists():
+        state = torch.load(str(model_path))
+        epoch = state['epoch']
+        step = state['step']
+        model.load_state_dict(state['model'])
+        print('Restored model, epoch {}, step {:,}'.format(epoch, step))
+    else:
+        epoch = 1
+        step = 0
 
     save = lambda ep: torch.save({
         'model': model.state_dict(),

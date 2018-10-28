@@ -43,7 +43,7 @@ def main():
     arg('--root', default='runs/debug', help='checkpoint root')
     arg('--batch-size', type=int, default=16)
     arg('--n-epochs', type=int, default=10)
-    arg('--lr', type=float, default=0.001)
+    arg('--lr', type=float, default=0.0001)
     arg('--workers', type=int, default=12)
     arg('--train_crop_height', type=int, default=256)
     arg('--train_crop_width', type=int, default=256)
@@ -95,7 +95,8 @@ def main():
             RandomCrop(height=args.train_crop_height, width=args.train_crop_width, p=1),
             Transpose(p=0.5),
             RandomRotate90(p=0.5),
-            RandomSizedCrop(min_max_height=(100,256), height=args.train_crop_height, width=args.train_crop_width),
+            RandomSizedCrop(min_max_height=(int(0.8 * args.train_crop_height), int(1.2 * args.train_crop_height)),
+                            height=args.train_crop_height, width=args.train_crop_width),
             VerticalFlip(p=0.5),
             HorizontalFlip(p=0.5),
             Normalize(p=1)
