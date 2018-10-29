@@ -38,7 +38,7 @@ moddel_list = {'UNet11': UNet11,
 def main():
     parser = argparse.ArgumentParser()
     arg = parser.add_argument
-    arg('--jaccard-weight', default=0.5, type=float)
+    arg('--jaccard-weight', default=0.3, type=float)
     arg('--device-ids', type=str, default='0', help='For example 0,1 to run on two GPUs')
     arg('--root', default='runs/debug', help='checkpoint root')
     arg('--batch-size', type=int, default=16)
@@ -92,13 +92,14 @@ def main():
 
     def train_transform(p=1):
         return Compose([
-            RandomCrop(height=args.train_crop_height, width=args.train_crop_width, p=1),
-            Transpose(p=0.5),
-            RandomRotate90(p=0.5),
-            RandomSizedCrop(min_max_height=(int(0.8 * args.train_crop_height), int(1.2 * args.train_crop_height)),
-                            height=args.train_crop_height, width=args.train_crop_width),
-            VerticalFlip(p=0.5),
-            HorizontalFlip(p=0.5),
+            CenterCrop(height=256, width=256, p=1),
+            # RandomCrop(height=args.train_crop_height, width=args.train_crop_width, p=1),
+            # Transpose(p=0.5),
+            # RandomRotate90(p=0.5),
+            # RandomSizedCrop(min_max_height=(int(0.8 * args.train_crop_height), int(1.2 * args.train_crop_height)),
+            #                 height=args.train_crop_height, width=args.train_crop_width),
+            # VerticalFlip(p=0.5),
+            # HorizontalFlip(p=0.5),
             Normalize(p=1)
         ], p=p)
 
