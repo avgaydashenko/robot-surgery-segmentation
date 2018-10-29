@@ -25,6 +25,9 @@ class RoboticsDataset(Dataset):
         augmented = self.transform(**data)
         image, mask = augmented["image"], augmented["mask"]
 
+        assert np.array([el in [0, 1] for el in np.unique(mask)]).all()
+        # print(np.unique(mask))
+
         if self.mode == 'train':
             return img_to_tensor(image), torch.from_numpy(np.expand_dims(mask, 0)).float()
         else:
