@@ -81,7 +81,7 @@ def predict(model, from_file_names, batch_size, to_path, img_transform):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     arg = parser.add_argument
-    arg('--model_path', type=str, default='data/models/AlbuNet', help='path to model folder')
+    arg('--model_path', type=str, default='runs/debug/', help='path to model folder')
     arg('--model_type', type=str, default='AlbuNet', help='network architecture',
         choices=['UNet', 'UNet11', 'UNet16', 'LinkNet34', 'AlbuNet'])
     arg('--output_path', type=str, help='path to save images', default='1')
@@ -90,7 +90,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    _, file_names = get_split()
+    test_path = Path('/home/raznem/proj_kaggle_airbus/data/test_v2')
+    file_names = list(test_path.glob('*'))
     model = get_model(str(Path(args.model_path).joinpath('model.pt')), model_type=args.model_type)
 
     print('num file_names = {}'.format(len(file_names)))
