@@ -38,7 +38,7 @@ moddel_list = {'UNet11': UNet11,
 def main():
     parser = argparse.ArgumentParser()
     arg = parser.add_argument
-    arg('--jaccard-weight', default=0., type=float)
+    arg('--jaccard-weight', default=0.5, type=float)
     arg('--device-ids', type=str, default='0', help='For example 0,1 to run on two GPUs')
     arg('--root', default='runs/debug', help='checkpoint root')
     arg('--batch-size', type=int, default=16)

@@ -8,7 +8,7 @@ class LossBinary:
     Loss defined as \alpha BCE - (1 - \alpha) SoftJaccard
     """
 
-    def __init__(self, jaccard_weight=0):
+    def __init__(self, jaccard_weight):
         self.nll_loss = nn.BCEWithLogitsLoss()
         self.jaccard_weight = jaccard_weight
 
@@ -23,5 +23,5 @@ class LossBinary:
             intersection = (jaccard_output * jaccard_target).sum()
             union = jaccard_output.sum() + jaccard_target.sum()
 
-            loss -= self.jaccard_weight * torch.log((intersection + eps) / (union - intersection + eps))
+            loss += self.jaccard_weight * (1 - (intersection + eps) / (union - intersection + eps))
         return loss
